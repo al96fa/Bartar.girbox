@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>دفتر تعمیرگاه (نسخه آفلاین گوشی)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F3EEE1;
+    --panel:#EAE2CD;
+    --panel-2:#E2D9C0;
+    --ink:#2B2620;
+    --ink-soft:#6b6152;
+    --red:#8C2F26;
+    --green:#2F5D3A;
+    --line:#C7BB9E;
+    --brass:#A67C3D;
+    --brass-dark:#8A6530;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Vazirmatn',sans-serif;
+    font-size:15px;
+    line-height:1.7;
+    padding-bottom:40px;
+  }
+  header{
+    padding:22px 18px 14px;
+    border-bottom:2px solid var(--ink);
+    background:
+      repeating-linear-gradient(transparent, transparent 27px, var(--line) 28px);
+  }
+  header h1{
+    margin:0;
+    font-size:22px;
+    font-weight:800;
+    letter-spacing:.5px;
+  }
+  header p{
+    margin:4px 0 0;
+    font-size:12.5px;
+    color:var(--ink-soft);
+  }
+  nav{
+    display:flex;
+    gap:2px;
+    padding:0 12px;
+    background:var(--panel);
+    overflow-x:auto;
+    border-bottom:1px solid var(--line);
+  }
+  nav button{
+    flex:1;
+    min-width:82px;
+    background:none;
+    border:none;
+    padding:12px 6px;
+    font-family:inherit;
+    font-size:13.5px;
+    color:var(--ink-soft);
+    cursor:pointer;
+    border-bottom:3px solid transparent;
+    white-space:nowrap;
+  }
+  nav button.active{
+    color:var(--ink);
+    font-weight:700;
+    border-bottom:3px solid var(--brass);
+  }
+  main{padding:16px;}
+  .card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:16px;
+    margin-bottom:14px;
+  }
+  .card h2{
+    font-size:14.5px;
+    margin:0 0 12px;
+    font-weight:700;
+    border-bottom:1px solid var(--line);
+    padding-bottom:8px;
+  }
+  .stat-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+  .stat{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:5px;
+    padding:10px 12px;
+  }
+  .stat .label{font-size:12px;color:var(--ink-soft);}
+  .stat .value{font-size:17px;font-weight:700;margin-top:3px;font-variant-numeric:tabular-nums;}
+  .stat.warn{border-color:var(--red);}
+  .stat.warn .value{color:var(--red);}
+  .stat.good .value{color:var(--green);}
+  label{display:block;font-size:13px;color:var(--ink-soft);margin-bottom:5px;}
+  input,select,textarea{
+    width:100%;
+    font-family:inherit;
+    font-size:14px;
+    padding:9px 10px;
+    border:1px solid var(--line);
+    border-radius:5px;
+    background:var(--paper);
+    color:var(--ink);
+    margin-bottom:12px;
+  }
+  .row{display:flex;gap:10px;}
+  .row > div{flex:1;}
+  .type-btns{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
+  .type-btns button{
+    flex:1;
+    min-width:70px;
+    padding:9px 4px;
+    border:1px solid var(--line);
+    background:var(--paper);
+    border-radius:5px;
+    font-family:inherit;
+    font-size:12.5px;
+    cursor:pointer;
+    color:var(--ink-soft);
+  }
+  .type-btns button.active{
+    background:var(--brass);
+    border-color:var(--brass-dark);
+    color:#fff;
+    font-weight:600;
+  }
+  .submit-btn{
+    width:100%;
+    padding:12px;
+    background:var(--ink);
+    color:var(--paper);
+    border:none;
+    border-radius:5px;
+    font-family:inherit;
+    font-size:14.5px;
+    font-weight:600;
+    cursor:pointer;
+  }
+  .warn-banner{
+    background:#f3e2df;
+    border:1px solid var(--red);
+    color:var(--red);
+    border-radius:5px;
+    padding:10px 12px;
+    font-size:13px;
+    margin-bottom:12px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .warn-banner input{width:auto;margin:0;}
+  .filters{display:flex;gap:8px;margin-bottom:10px;}
+  .tx-item{
+    border-bottom:1px dashed var(--line);
+    padding:10px 2px;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:10px;
+  }
+  .tx-item:last-child{border-bottom:none;}
+  .tx-main{flex:1;}
+  .tx-cat{font-weight:600;font-size:13.5px;}
+  .tx-meta{font-size:12px;color:var(--ink-soft);margin-top:2px;}
+  .tx-amount{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap;}
+  .tx-amount.income{color:var(--green);}
+  .tx-amount.expense{color:var(--red);}
+  .tx-amount.withdrawal{color:var(--brass-dark);}
+  .tag{
+    display:inline-block;
+    font-size:11px;
+    padding:1px 7px;
+    border-radius:10px;
+    border:1px solid var(--line);
+    margin-inline-start:6px;
+    color:var(--ink-soft);
+  }
+  .tag.unpaid{border-color:var(--red);color:var(--red);}
+  .tag.paid{border-color:var(--green);color:var(--green);}
+  .actions{display:flex;flex-direction:column;gap:6px;align-items:flex-end;}
+  .actions button{
+    font-family:inherit;
+    font-size:11.5px;
+    border:1px solid var(--line);
+    background:var(--paper);
+    border-radius:4px;
+    padding:4px 8px;
+    cursor:pointer;
+    color:var(--ink-soft);
+  }
+  .actions button.settle{border-color:var(--green);color:var(--green);}
+  .actions button.del{border-color:var(--red);color:var(--red);}
+  .empty{color:var(--ink-soft);font-size:13px;text-align:center;padding:20px 0;}
+  .person-card{
+    border-bottom:1px solid var(--line);
+    padding:12px 2px;
+  }
+  .person-card:last-child{border-bottom:none;}
+  .person-name{font-weight:700;font-size:14.5px;}
+  .person-nums{display:flex;gap:14px;margin-top:4px;font-size:12.5px;}
+  .person-nums span.owe{color:var(--red);}
+  .person-nums span.owed{color:var(--green);}
+  select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%236b6152'%3E%3Cpath d='M5 7l5 5 5-5H5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:8px center;padding-inline-start:26px;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>دفتر تعمیرگاه <span style="font-size:12px;font-weight:400;color:var(--ink-soft);">— نسخه آفلاین</span></h1>
+  <p id="todayLabel"></p>
+</header>
+
+<nav>
+  <button data-tab="dashboard" class="active">داشبورد</button>
+  <button data-tab="new">ثبت تراکنش</button>
+  <button data-tab="list">تراکنش‌ها</button>
+  <button data-tab="jobs">کارها</button>
+  <button data-tab="inventory">انبار</button>
+  <button data-tab="persons">اشخاص</button>
+  <button data-tab="recurring">تعهدات ماهانه</button>
+  <button data-tab="backup">پشتیبان‌گیری</button>
+</nav>
+
+<main id="main"></main>
+
+<script>
+function lsGet(key){
+  const v = localStorage.getItem(key);
+  return v===null ? null : {key, value:v, shared:false};
+}
+function lsSet(key, value){
+  localStorage.setItem(key, value);
+  return {key, value, shared:false};
+}
+const STORAGE_KEY = 'tamirgah-transactions';
+const RECURRING_KEY = 'tamirgah-recurring';
+const JOBS_KEY = 'tamirgah-jobs';
+const OPENING_CASH_KEY = 'tamirgah-opening-cash';
+const INVENTORY_KEY = 'tamirgah-inventory';
+let transactions = [];
+let recurring = [];
+let jobs = [];
+let inventory = [];
+let openingCash = 0;
+let activeTab = 'dashboard';
+let formType = 'expense';
+let confirmOverWithdraw = false;
+let listFilterPerson = '';
+let listFilterType = '';
+let jobsFilterStatus = 'open';
+
+const CATS = {
+  expense: ['قطعه مصرفی (نصب مستقیم)','خدمات همکاران','نیروی کنتراتی','خرید قطعه (برای فروش)','روغن','ملزومات مغازه','پیک','اجاره مغازه','حقوق شاگرد/نیرو','سایر هزینه'],
+  income: ['دریافت از مشتری','فروش قطعه'],
+  withdrawal: ['برداشت شریک'],
+  opening_payable: ['بدهی قبلی به تامین‌کننده/همکار'],
+  opening_receivable: ['طلب قبلی از مشتری/دیگران']
+};
+const TYPE_LABELS = {expense:'هزینه', income:'درآمد', withdrawal:'برداشت شریک', opening_payable:'بدهی قبلی (مانده اولیه)', opening_receivable:'طلب قبلی (مانده اولیه)', inventory_purchase:'خرید برای انبار'};
+
+function fmt(n){
+  n = Math.round(Number(n)||0);
+  return n.toLocaleString('en-US') + ' تومان';
+}
+function faDate(d){
+  try{ return new Date(d).toLocaleDateString('fa-IR'); }catch(e){ return d; }
+}
+function todayStr(){
+  const d = new Date();
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+
+async function loadData(){
+  try{
+    const res = await lsGet(STORAGE_KEY);
+    transactions = res && res.value ? JSON.parse(res.value) : [];
+  }catch(e){
+    transactions = [];
+  }
+  try{
+    const res2 = await lsGet(RECURRING_KEY);
+    recurring = res2 && res2.value ? JSON.parse(res2.value) : [];
+  }catch(e){
+    recurring = [];
+  }
+  try{
+    const res3 = await lsGet(JOBS_KEY);
+    jobs = res3 && res3.value ? JSON.parse(res3.value) : [];
+  }catch(e){
+    jobs = [];
+  }
+  try{
+    const res4 = await lsGet(OPENING_CASH_KEY);
+    openingCash = res4 && res4.value ? Number(res4.value) : 0;
+  }catch(e){
+    openingCash = 0;
+  }
+  try{
+    const res5 = await lsGet(INVENTORY_KEY);
+    inventory = res5 && res5.value ? JSON.parse(res5.value) : [];
+  }catch(e){
+    inventory = [];
+  }
+  render();
+}
+async function saveData(){
+  try{
+    await lsSet(STORAGE_KEY, JSON.stringify(transactions));
+  }catch(e){
+    console.error('ذخیره‌سازی ناموفق بود', e);
+  }
+}
+async function saveInventory(){
+  try{
+    await lsSet(INVENTORY_KEY, JSON.stringify(inventory));
+  }catch(e){
+    console.error('ذخیره‌سازی ناموفق بود', e);
+  }
+}
+async function saveOpeningCash(){
+  try{
+    await lsSet(OPENING_CASH_KEY, String(openingCash));
+  }catch(e){
+    console.error('ذخیره‌سازی ناموفق بود', e);
+  }
+}
+async function saveRecurring(){
+  try{
+    await lsSet(RECURRING_KEY, JSON.stringify(recurring));
+  }catch(e){
+    console.error('ذخیره‌سازی ناموفق بود', e);
+  }
+}
+async function saveJobs(){
+  try{
+    await lsSet(JOBS_KEY, JSON.stringify(jobs));
+  }catch(e){
+    console.error('ذخیره‌سازی ناموفق بود', e);
+  }
+}
+
+function computeTotals(list){
+  let income=0, expense=0, withdrawal=0, cash=0;
+  list.forEach(t=>{
+    if(t.type==='income'){
+      income+=t.amount;
+      if(t.method==='cash' || t.paid) cash+=t.amount;
+    } else if(t.type==='expense'){
+      expense+=t.amount;
+      if(t.method==='cash' || (t.method==='credit' && t.paid)) cash-=t.amount;
+    } else if(t.type==='inventory_purchase'){
+      if(t.method==='cash' || (t.method==='credit' && t.paid)) cash-=t.amount;
+    } else if(t.type==='withdrawal'){
+      withdrawal+=t.amount;
+      cash-=t.amount;
+    } else if(t.type==='opening_payable'){
+      if(t.paid) cash-=t.amount;
+    } else if(t.type==='opening_receivable'){
+      if(t.paid) cash+=t.amount;
+    }
+  });
+  const netProfit = income - expense;
+  const ceiling = netProfit - withdrawal;
+  return {income, expense, withdrawal, netProfit, ceiling, cash};
+}
+
+function personBalances(list){
+  const map = {};
+  list.forEach(t=>{
+    if(!t.person) return;
+    if(!map[t.person]) map[t.person] = {owe:0, owed:0};
+    if((t.type==='expense'||t.type==='inventory_purchase') && t.method==='credit' && !t.paid) map[t.person].owe += t.amount;
+    if(t.type==='income' && t.method==='credit' && !t.paid) map[t.person].owed += t.amount;
+    if(t.type==='opening_payable' && !t.paid) map[t.person].owe += t.amount;
+    if(t.type==='opening_receivable' && !t.paid) map[t.person].owed += t.amount;
+  });
+  return map;
+}
+function computeInventoryValue(){
+  return inventory.reduce((s,i)=> s + i.qty*i.unitCost, 0);
+}
+
+function daysInMonthOf(d){
+  return new Date(d.getFullYear(), d.getMonth()+1, 0).getDate();
+}
+function accruedFor(item){
+  const last = new Date(item.lastPaidDate);
+  const now = new Date(todayStr());
+  const days = Math.max(0, Math.round((now-last)/86400000));
+  const dim = daysInMonthOf(now);
+  return (item.monthlyAmount/dim) * days;
+}
+function computeReserve(){
+  return recurring.reduce((sum,r)=> sum + accruedFor(r), 0);
+}
+function computeJobProfit(jobId){
+  let income=0, expense=0;
+  transactions.forEach(t=>{
+    if(t.jobId!==jobId) return;
+    if(t.type==='income') income+=t.amount;
+    if(t.type==='expense') expense+=t.amount;
+  });
+  return {income, expense, profit: income-expense};
+}
+
+function switchTab(tab){
+  activeTab = tab;
+  render();
+}
+
+function render(){
+  document.getElementById('todayLabel').textContent = 'امروز: ' + faDate(todayStr());
+  document.querySelectorAll('nav button').forEach(b=>{
+    b.classList.toggle('active', b.dataset.tab===activeTab);
+  });
+  const main = document.getElementById('main');
+  if(activeTab==='dashboard') main.innerHTML = renderDashboard();
+  else if(activeTab==='new') main.innerHTML = renderForm();
+  else if(activeTab==='list') main.innerHTML = renderList();
+  else if(activeTab==='jobs') main.innerHTML = renderJobs();
+  else if(activeTab==='inventory') main.innerHTML = renderInventory();
+  else if(activeTab==='persons') main.innerHTML = renderPersons();
+  else if(activeTab==='recurring') main.innerHTML = renderRecurring();
+  else if(activeTab==='backup') main.innerHTML = renderBackup();
+  attachHandlers();
+}
+
+function renderDashboard(){
+  const t = computeTotals(transactions);
+  const pb = personBalances(transactions);
+  let totalOwe=0, totalOwed=0;
+  Object.values(pb).forEach(p=>{totalOwe+=p.owe; totalOwed+=p.owed;});
+  const reserve = computeReserve();
+  const realCeiling = t.ceiling - reserve;
+  const doneJobs = jobs.filter(j=>j.status==='done');
+  const doneJobsProfit = doneJobs.reduce((s,j)=> s + computeJobProfit(j.id).profit, 0);
+  const totalCash = openingCash + t.cash;
+
+  return `
+    <div class="card">
+      <h2>مانده اولیه صندوق و حساب‌های مغازه</h2>
+      <label>جمع نقد صندوق + حساب‌های بانکی مغازه، از قبل از شروع استفاده از این دفتر</label>
+      <form id="openingCashForm" class="row" style="align-items:flex-end;">
+        <div><input type="number" name="openingCash" step="1000" value="${openingCash}"></div>
+        <div style="flex:none;width:auto;"><button type="submit" class="submit-btn" style="white-space:nowrap;padding:9px 16px;">ذخیره</button></div>
+      </form>
+    </div>
+    <div class="card">
+      <h2>وضعیت مالی</h2>
+      <div class="stat-grid">
+        <div class="stat"><div class="label">درآمد کل</div><div class="value">${fmt(t.income)}</div></div>
+        <div class="stat"><div class="label">هزینه کل</div><div class="value">${fmt(t.expense)}</div></div>
+        <div class="stat ${t.netProfit<0?'warn':'good'}"><div class="label">سود خالص (تعهدی)</div><div class="value">${fmt(t.netProfit)}</div></div>
+        <div class="stat"><div class="label">مجموع برداشت شرکا</div><div class="value">${fmt(t.withdrawal)}</div></div>
+        <div class="stat ${t.ceiling<0?'warn':'good'}"><div class="label">سقف باقیمانده برداشت</div><div class="value">${fmt(t.ceiling)}</div></div>
+        <div class="stat"><div class="label">نقد صندوق (تخمینی، با احتساب مانده اولیه)</div><div class="value">${fmt(totalCash)}</div></div>
+        <div class="stat warn"><div class="label">ذخیره لازم برای تعهدات ماهانه</div><div class="value">${fmt(reserve)}</div></div>
+        <div class="stat ${realCeiling<0?'warn':'good'}"><div class="label">سقف واقع‌بینانه برداشت</div><div class="value">${fmt(realCeiling)}</div></div>
+      </div>
+      ${t.ceiling<0 ? '<div class="warn-banner" style="margin-top:12px;">⚠ برداشت شرکا از سود خالص جمع‌شده بیشتر شده — این عدد باید هرچه زودتر جبران بشه.</div>' : ''}
+      ${(t.ceiling>=0 && realCeiling<0) ? '<div class="warn-banner" style="margin-top:12px;">⚠ سود نشون‌داده‌شده کافیه، ولی بخشی از اجاره/حقوق تعهد شده و پرداخت نشده — قبل از برداشت بیشتر این رو کنار بذار.</div>' : ''}
+    </div>
+    <div class="card">
+      <h2>خلاصه‌ی بدهی / طلب</h2>
+      <div class="stat-grid">
+        <div class="stat warn"><div class="label">جمع بدهی ما به دیگران</div><div class="value">${fmt(totalOwe)}</div></div>
+        <div class="stat good"><div class="label">جمع طلب ما از دیگران</div><div class="value">${fmt(totalOwed)}</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>سود کارهای تمام‌شده</h2>
+      <div class="stat-grid">
+        <div class="stat"><div class="label">تعداد کارهای تمام‌شده</div><div class="value">${doneJobs.length}</div></div>
+        <div class="stat ${doneJobsProfit<0?'warn':'good'}"><div class="label">جمع سود کارهای تمام‌شده</div><div class="value">${fmt(doneJobsProfit)}</div></div>
+      </div>
+      ${doneJobs.length>0 ? doneJobs.slice().sort((a,b)=> (b.doneDate||'').localeCompare(a.doneDate||'')).slice(0,8).map(j=>{
+        const p = computeJobProfit(j.id);
+        return `
+          <div class="person-card">
+            <div class="person-name">${j.title}</div>
+            <div class="tx-meta">اتمام: ${faDate(j.doneDate)}</div>
+            <div class="person-nums" style="margin-top:2px;">
+              <span style="font-weight:700;color:${p.profit<0?'var(--red)':'var(--green)'}">سود این کار: ${fmt(p.profit)}</span>
+            </div>
+          </div>
+        `;
+      }).join('') : ''}
+      ${doneJobs.length>8 ? `<div class="tx-meta" style="margin-top:8px;">برای دیدن بقیه، از تب «کارها» فیلتر رو روی «تمام‌شده‌ها» بذار.</div>` : ''}
+    </div>
+    <div class="card">
+      <h2>انبار</h2>
+      <div class="stat-grid">
+        <div class="stat"><div class="label">تعداد اقلام انبار</div><div class="value">${inventory.filter(i=>i.qty>0).length}</div></div>
+        <div class="stat good"><div class="label">ارزش کل انبار (دارایی)</div><div class="value">${fmt(computeInventoryValue())}</div></div>
+      </div>
+    </div>
+  `;
+}
+
+function renderForm(){
+  const cats = CATS[formType];
+  const needsMethod = (formType==='expense' || formType==='income');
+  const needsPerson = true;
+  const t = computeTotals(transactions);
+  let overWithdrawWarning = '';
+  return `
+    <div class="card">
+      <h2>ثبت تراکنش جدید</h2>
+      <label>نوع تراکنش</label>
+      <div class="type-btns">
+        <button data-set-type="expense" class="${formType==='expense'?'active':''}">هزینه</button>
+        <button data-set-type="income" class="${formType==='income'?'active':''}">درآمد</button>
+        <button data-set-type="withdrawal" class="${formType==='withdrawal'?'active':''}">برداشت شریک</button>
+        <button data-set-type="opening_payable" class="${formType==='opening_payable'?'active':''}">بدهی قبلی</button>
+        <button data-set-type="opening_receivable" class="${formType==='opening_receivable'?'active':''}">طلب قبلی</button>
+      </div>
+      <form id="txForm">
+        <label>تاریخ</label>
+        <input type="date" name="date" value="${todayStr()}" required>
+
+        <label>دسته / موضوع</label>
+        <select name="category" required>
+          ${cats.map(c=>`<option value="${c}">${c}</option>`).join('')}
+        </select>
+
+        <label>طرف حساب (اسم شخص)</label>
+        <input type="text" name="person" placeholder="مثلاً: تامین‌کننده رضایی، مشتری احمدی، شریک...">
+
+        ${(formType==='income' || formType==='expense') ? `
+        <label>مربوط به کدوم کار/پروژه (اختیاری)</label>
+        <select name="jobId">
+          <option value="">— بدون پروژه —</option>
+          ${jobs.filter(j=>j.status==='open').map(j=>`<option value="${j.id}">${j.title}</option>`).join('')}
+        </select>` : ''}
+
+        <div class="row">
+          <div>
+            <label>مبلغ (تومان)</label>
+            <input type="number" name="amount" min="0" step="1000" required>
+          </div>
+          ${needsMethod ? `
+          <div>
+            <label>نقد یا نسیه</label>
+            <select name="method">
+              <option value="cash">نقد</option>
+              <option value="credit">نسیه</option>
+            </select>
+          </div>` : ''}
+        </div>
+
+        <label>توضیح (اختیاری)</label>
+        <input type="text" name="note" placeholder="توضیح کوتاه">
+
+        <div id="warnSlot"></div>
+        <button type="submit" class="submit-btn">ثبت تراکنش</button>
+      </form>
+    </div>
+  `;
+}
+
+function renderList(){
+  const persons = [...new Set(transactions.map(t=>t.person).filter(Boolean))];
+  let list = transactions.slice().sort((a,b)=> b.date.localeCompare(a.date));
+  if(listFilterPerson) list = list.filter(t=>t.person===listFilterPerson);
+  if(listFilterType) list = list.filter(t=>t.type===listFilterType);
+
+  return `
+    <div class="card">
+      <h2>فیلتر</h2>
+      <div class="filters">
+        <select id="filterPerson">
+          <option value="">همه اشخاص</option>
+          ${persons.map(p=>`<option value="${p}" ${listFilterPerson===p?'selected':''}>${p}</option>`).join('')}
+        </select>
+        <select id="filterType">
+          <option value="">همه انواع</option>
+          ${Object.entries(TYPE_LABELS).map(([k,v])=>`<option value="${k}" ${listFilterType===k?'selected':''}>${v}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+    <div class="card">
+      <h2>لیست تراکنش‌ها (${list.length})</h2>
+      ${list.length===0 ? '<div class="empty">تراکنشی ثبت نشده</div>' : list.map(t=>renderTxItem(t)).join('')}
+    </div>
+  `;
+}
+
+function renderTxItem(t){
+  const isCreditLike = (t.method==='credit') || t.type==='opening_payable' || t.type==='opening_receivable';
+  const sign = t.type==='income' ? '+' : (t.type==='opening_receivable' ? '' : '−');
+  const cls = t.type==='income' ? 'income' : (t.type==='withdrawal' ? 'withdrawal' : 'expense');
+  const job = t.jobId ? jobs.find(j=>j.id===t.jobId) : null;
+  return `
+    <div class="tx-item">
+      <div class="tx-main">
+        <div class="tx-cat">${t.category}</div>
+        <div class="tx-meta">
+          ${faDate(t.date)} · ${TYPE_LABELS[t.type]}${t.person ? ' · '+t.person : ''}
+          ${t.note ? ' · '+t.note : ''}
+          ${job ? ` · پروژه: ${job.title}` : ''}
+          ${isCreditLike ? `<span class="tag ${t.paid?'paid':'unpaid'}">${t.paid?'تسویه شده':'تسویه‌نشده'}</span>` : ''}
+        </div>
+      </div>
+      <div class="actions">
+        <div class="tx-amount ${cls}">${sign}${fmt(t.amount)}</div>
+        ${isCreditLike && !t.paid ? `<button class="settle" data-settle="${t.id}">تسویه شد</button>` : ''}
+        <button class="del" data-del="${t.id}">حذف</button>
+      </div>
+    </div>
+  `;
+}
+
+function renderPersons(){
+  const pb = personBalances(transactions);
+  const names = Object.keys(pb).sort();
+  if(names.length===0) return '<div class="card"><div class="empty">هنوز شخصی با مانده‌ی باز ثبت نشده</div></div>';
+  return `
+    <div class="card">
+      <h2>ریز حساب اشخاص</h2>
+      ${names.map(n=>{
+        const p = pb[n];
+        const net = p.owed - p.owe;
+        return `
+          <div class="person-card">
+            <div class="person-name">${n}</div>
+            <div class="person-nums">
+              ${p.owe>0 ? `<span class="owe">بدهی ما: ${fmt(p.owe)}</span>` : ''}
+              ${p.owed>0 ? `<span class="owed">طلب ما: ${fmt(p.owed)}</span>` : ''}
+              ${p.owe===0 && p.owed===0 ? '<span>تسویه</span>' : ''}
+            </div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+}
+
+function renderJobs(){
+  const filtered = jobs.filter(j=> jobsFilterStatus==='all' ? true : j.status===jobsFilterStatus)
+                       .slice().sort((a,b)=> b.createdDate.localeCompare(a.createdDate));
+  return `
+    <div class="card">
+      <h2>ثبت کار/پروژه جدید</h2>
+      <form id="jobForm">
+        <label>عنوان کار (مثلاً: پژو ۲۰۶ - آقای رضایی - تعویض دیسک و صفحه)</label>
+        <input type="text" name="title" required>
+        <button type="submit" class="submit-btn">افزودن کار</button>
+      </form>
+    </div>
+    <div class="card">
+      <h2>لیست کارها</h2>
+      <div class="filters">
+        <select id="jobsFilter">
+          <option value="open" ${jobsFilterStatus==='open'?'selected':''}>بازها</option>
+          <option value="done" ${jobsFilterStatus==='done'?'selected':''}>تمام‌شده‌ها</option>
+          <option value="all" ${jobsFilterStatus==='all'?'selected':''}>همه</option>
+        </select>
+      </div>
+      ${filtered.length===0 ? '<div class="empty">کاری در این وضعیت نیست</div>' : filtered.map(j=>{
+        const p = computeJobProfit(j.id);
+        return `
+          <div class="person-card">
+            <div class="person-name">${j.title}</div>
+            <div class="tx-meta">شروع: ${faDate(j.createdDate)}${j.status==='done' ? ' · اتمام: '+faDate(j.doneDate) : ''}</div>
+            <div class="person-nums">
+              <span class="owed">درآمد این کار: ${fmt(p.income)}</span>
+              <span class="owe">هزینه این کار: ${fmt(p.expense)}</span>
+            </div>
+            <div class="person-nums" style="margin-top:2px;">
+              <span style="font-weight:700;color:${p.profit<0?'var(--red)':'var(--green)'}">سود این کار: ${fmt(p.profit)}</span>
+            </div>
+            <div style="margin-top:8px;display:flex;gap:8px;">
+              ${j.status==='open' ? `<button class="settle" data-jobdone="${j.id}">تمام شد</button>` : `<button class="settle" data-jobreopen="${j.id}">بازگشایی</button>`}
+              <button class="del" data-jobdel="${j.id}">حذف</button>
+            </div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+}
+
+function renderRecurring(){
+  const reserve = computeReserve();
+  return `
+    <div class="card">
+      <h2>افزودن تعهد ماهانه</h2>
+      <form id="recForm">
+        <label>عنوان (مثلاً اجاره مغازه، حقوق شاگرد رضا)</label>
+        <input type="text" name="name" required>
+        <label>مبلغ ماهانه (تومان)</label>
+        <input type="number" name="amount" min="0" step="1000" required>
+        <label>آخرین تاریخ پرداخت</label>
+        <input type="date" name="lastPaidDate" value="${todayStr()}" required>
+        <button type="submit" class="submit-btn">افزودن</button>
+      </form>
+    </div>
+    <div class="card">
+      <h2>تعهدات فعلی (ذخیره جمع‌شده: ${fmt(reserve)})</h2>
+      ${recurring.length===0 ? '<div class="empty">تعهد ماهانه‌ای ثبت نشده</div>' : recurring.map(r=>{
+        const acc = accruedFor(r);
+        return `
+          <div class="person-card">
+            <div class="person-name">${r.name}</div>
+            <div class="tx-meta">مبلغ ماهانه: ${fmt(r.monthlyAmount)} · آخرین پرداخت: ${faDate(r.lastPaidDate)}</div>
+            <div class="person-nums">
+              <span class="owe">ذخیره جمع‌شده تا امروز: ${fmt(acc)}</span>
+            </div>
+            <div style="margin-top:8px;display:flex;gap:8px;">
+              <button class="settle" data-pay="${r.id}">پرداخت شد امروز</button>
+              <button class="del" data-delrec="${r.id}">حذف</button>
+            </div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+}
+
+function renderInventory(){
+  const items = inventory.filter(i=>i.qty>0);
+  const totalValue = computeInventoryValue();
+  return `
+    <div class="card">
+      <h2>خرید برای انبار (افزودن موجودی)</h2>
+      <p style="font-size:12.5px;color:var(--ink-soft);margin-top:-6px;">این خرید فعلاً روی سود خالص اثر نمی‌ذاره — فقط وقتی قطعه از انبار مصرف بشه، هزینه واقعی ثبت می‌شه.</p>
+      <form id="invBuyForm">
+        <label>نام قطعه</label>
+        <input type="text" name="name" required>
+        <div class="row">
+          <div><label>تعداد</label><input type="number" name="qty" min="1" step="1" required></div>
+          <div><label>قیمت واحد (تومان)</label><input type="number" name="unitCost" min="0" step="1000" required></div>
+        </div>
+        <label>تامین‌کننده</label>
+        <input type="text" name="person" placeholder="مثلاً: تامین‌کننده رضایی">
+        <label>نقد یا نسیه</label>
+        <select name="method">
+          <option value="cash">نقد</option>
+          <option value="credit">نسیه</option>
+        </select>
+        <button type="submit" class="submit-btn">افزودن به انبار</button>
+      </form>
+    </div>
+    <div class="card">
+      <h2>برداشت از انبار برای مصرف</h2>
+      <p style="font-size:12.5px;color:var(--ink-soft);margin-top:-6px;">این کار یک هزینه‌ی واقعی ثبت می‌کنه و از سود خالص کم می‌شه.</p>
+      ${items.length===0 ? '<div class="empty">انباری برای برداشت نیست</div>' : `
+      <form id="invUseForm">
+        <label>قطعه</label>
+        <select name="itemId" required>
+          ${items.map(i=>`<option value="${i.id}">${i.name} (موجود: ${i.qty})</option>`).join('')}
+        </select>
+        <label>تعداد مصرفی</label>
+        <input type="number" name="qty" min="1" step="1" required>
+        <label>مربوط به کدوم کار/پروژه (اختیاری)</label>
+        <select name="jobId">
+          <option value="">— بدون پروژه —</option>
+          ${jobs.filter(j=>j.status==='open').map(j=>`<option value="${j.id}">${j.title}</option>`).join('')}
+        </select>
+        <button type="submit" class="submit-btn">ثبت مصرف</button>
+      </form>`}
+    </div>
+    <div class="card">
+      <h2>موجودی فعلی انبار (ارزش کل: ${fmt(totalValue)})</h2>
+      ${items.length===0 ? '<div class="empty">انبار خالیه</div>' : items.map(i=>`
+        <div class="person-card">
+          <div class="person-name">${i.name}</div>
+          <div class="tx-meta">تعداد: ${i.qty} · قیمت واحد: ${fmt(i.unitCost)} · ارزش کل: ${fmt(i.qty*i.unitCost)}</div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function renderBackup(){
+  return `
+    <div class="card">
+      <h2>دانلود پشتیبان</h2>
+      <p style="font-size:13px;color:var(--ink-soft);">یه فایل کامل از همه‌ی اطلاعات (تراکنش‌ها، تعهدات، کارها، انبار، مانده اولیه) دانلود کن و یه‌جای امن (گوگل درایو، تلگرام خودت و...) نگه دار. حداقل هفته‌ای یه‌بار این کار رو بکن.</p>
+      <button id="downloadBackupBtn" class="submit-btn">دانلود فایل پشتیبان</button>
+    </div>
+    <div class="card">
+      <h2>بازیابی از فایل پشتیبان</h2>
+      <p style="font-size:13px;color:var(--ink-soft);">اگه اطلاعات این دستگاه از بین رفت، فایل پشتیبانی که قبلاً دانلود کردی رو این‌جا آپلود کن تا همه‌چیز برگرده. توجه: این کار اطلاعات فعلی رو کامل جایگزین می‌کنه.</p>
+      <input type="file" id="restoreFile" accept="application/json">
+    </div>
+  `;
+}
+
+function attachHandlers(){
+  document.querySelectorAll('nav button').forEach(b=>{
+    b.onclick = ()=> switchTab(b.dataset.tab);
+  });
+
+  const openingForm = document.getElementById('openingCashForm');
+  if(openingForm){
+    openingForm.onsubmit = (e)=>{
+      e.preventDefault();
+      const fd = new FormData(openingForm);
+      openingCash = Number(fd.get('openingCash')) || 0;
+      saveOpeningCash();
+      render();
+    };
+  }
+
+  document.querySelectorAll('[data-set-type]').forEach(b=>{
+    b.onclick = ()=>{ formType = b.dataset.setType; confirmOverWithdraw=false; render(); };
+  });
+
+  const form = document.getElementById('txForm');
+  if(form){
+    form.onsubmit = (e)=>{
+      e.preventDefault();
+      const fd = new FormData(form);
+      const amount = Number(fd.get('amount'));
+      const t = computeTotals(transactions);
+
+      if(formType==='withdrawal' && !confirmOverWithdraw){
+        const prospective = t.ceiling - amount;
+        if(prospective < 0){
+          document.getElementById('warnSlot').innerHTML = `
+            <div class="warn-banner">
+              <input type="checkbox" id="ackWarn">
+              <label style="margin:0;flex:1;">این برداشت از سود خالص باقیمانده (${fmt(t.ceiling)}) بیشتره. برای ثبت، تیک بزن.</label>
+            </div>`;
+          document.getElementById('ackWarn').onchange = (ev)=>{
+            confirmOverWithdraw = ev.target.checked;
+          };
+          return;
+        }
+      }
+
+      const newTx = {
+        id: Date.now()+'-'+Math.random().toString(36).slice(2,7),
+        type: formType,
+        date: fd.get('date') || todayStr(),
+        category: fd.get('category'),
+        person: (fd.get('person')||'').trim(),
+        amount: amount,
+        method: fd.get('method') || null,
+        note: (fd.get('note')||'').trim(),
+        jobId: fd.get('jobId') || null,
+        paid: (formType==='expense'||formType==='income') ? (fd.get('method')==='cash') : false
+      };
+      transactions.push(newTx);
+      saveData();
+      confirmOverWithdraw = false;
+      switchTab('list');
+    };
+  }
+
+  const fp = document.getElementById('filterPerson');
+  if(fp) fp.onchange = ()=>{ listFilterPerson = fp.value; render(); };
+  const ft = document.getElementById('filterType');
+  if(ft) ft.onchange = ()=>{ listFilterType = ft.value; render(); };
+
+  document.querySelectorAll('[data-settle]').forEach(b=>{
+    b.onclick = ()=>{
+      const tx = transactions.find(x=>x.id===b.dataset.settle);
+      if(tx){ tx.paid = true; saveData(); render(); }
+    };
+  });
+  document.querySelectorAll('[data-del]').forEach(b=>{
+    b.onclick = ()=>{
+      if(confirm('این تراکنش حذف بشه؟')){
+        transactions = transactions.filter(x=>x.id!==b.dataset.del);
+        saveData(); render();
+      }
+    };
+  });
+
+  const jobForm = document.getElementById('jobForm');
+  if(jobForm){
+    jobForm.onsubmit = (e)=>{
+      e.preventDefault();
+      const fd = new FormData(jobForm);
+      jobs.push({
+        id: Date.now()+'-'+Math.random().toString(36).slice(2,7),
+        title: fd.get('title'),
+        status: 'open',
+        createdDate: todayStr(),
+        doneDate: null
+      });
+      saveJobs();
+      render();
+    };
+  }
+  const jf = document.getElementById('jobsFilter');
+  if(jf) jf.onchange = ()=>{ jobsFilterStatus = jf.value; render(); };
+  document.querySelectorAll('[data-jobdone]').forEach(b=>{
+    b.onclick = ()=>{
+      const j = jobs.find(x=>x.id===b.dataset.jobdone);
+      if(j){ j.status='done'; j.doneDate=todayStr(); saveJobs(); render(); }
+    };
+  });
+  document.querySelectorAll('[data-jobreopen]').forEach(b=>{
+    b.onclick = ()=>{
+      const j = jobs.find(x=>x.id===b.dataset.jobreopen);
+      if(j){ j.status='open'; j.doneDate=null; saveJobs(); render(); }
+    };
+  });
+  document.querySelectorAll('[data-jobdel]').forEach(b=>{
+    b.onclick = ()=>{
+      if(confirm('این کار حذف بشه؟ (تراکنش‌های مرتبط حذف نمی‌شن، فقط دیگه به این کار وصل نشون داده نمی‌شن)')){
+        jobs = jobs.filter(x=>x.id!==b.dataset.jobdel);
+        saveJobs(); render();
+      }
+    };
+  });
+
+  const recForm = document.getElementById('recForm');
+  if(recForm){
+    recForm.onsubmit = (e)=>{
+      e.preventDefault();
+      const fd = new FormData(recForm);
+      recurring.push({
+        id: Date.now()+'-'+Math.random().toString(36).slice(2,7),
+        name: fd.get('name'),
+        monthlyAmount: Number(fd.get('amount')),
+        lastPaidDate: fd.get('lastPaidDate') || todayStr()
+      });
+      saveRecurring();
+      render();
+    };
+  }
+  document.querySelectorAll('[data-pay]').forEach(b=>{
+    b.onclick = ()=>{
+      const r = recurring.find(x=>x.id===b.dataset.pay);
+      if(r){
+        if(confirm('همزمان یک تراکنش هزینه هم برای این پرداخت ثبت بشه؟')){
+          transactions.push({
+            id: Date.now()+'-'+Math.random().toString(36).slice(2,7),
+            type:'expense',
+            date: todayStr(),
+            category: r.name,
+            person:'',
+            amount: r.monthlyAmount,
+            method:'cash',
+            note:'پرداخت ماهانه',
+            jobId: null,
+            paid:true
+          });
+          saveData();
+        }
+        r.lastPaidDate = todayStr();
+        saveRecurring();
+        render();
+      }
+    };
+  });
+  document.querySelectorAll('[data-delrec]').forEach(b=>{
+    b.onclick = ()=>{
+      if(confirm('این تعهد ماهانه حذف بشه؟')){
+        recurring = recurring.filter(x=>x.id!==b.dataset.delrec);
+        saveRecurring(); render();
+      }
+    };
+  });
+
+  const invBuyForm = document.getElementById('invBuyForm');
+  if(invBuyForm){
+    invBuyForm.onsubmit = (e)=>{
+      e.preventDefault();
+      const fd = new FormData(invBuyForm);
+      const name = fd.get('name').trim();
+      const qty = Number(fd.get('qty'));
+      const unitCost = Number(fd.get('unitCost'));
+      const method = fd.get('method');
+      const person = (fd.get('person')||'').trim();
+
+      let item = inventory.find(i=>i.name===name);
+      if(item){
+        const newTotalQty = item.qty + qty;
+        item.unitCost = ((item.qty*item.unitCost) + (qty*unitCost)) / newTotalQty;
+        item.qty = newTotalQty;
+      } else {
+        item = {id: Date.now()+'-'+Math.random().toString(36).slice(2,7), name, qty, unitCost};
+        inventory.push(item);
+      }
+      saveInventory();
+
+      transactions.push({
+        id: Date.now()+'-'+Math.random().toString(36).slice(2,7),
+        type: 'inventory_purchase',
+        date: todayStr(),
+        category: name,
+        person,
+        amount: qty*unitCost,
+        method,
+        note: `خرید ${qty} عدد برای انبار`,
+        jobId: null,
+        paid: method==='cash'
+      });
+      saveData();
+      render();
+    };
+  }
+
+  const invUseForm = document.getElementById('invUseForm');
+  if(invUseForm){
+    invUseForm.onsubmit = (e)=>{
+      e.preventDefault();
+      const fd = new FormData(invUseForm);
+      const item = inventory.find(i=>i.id===fd.get('itemId'));
+      const useQty = Number(fd.get('qty'));
+      if(!item) return;
+      if(useQty > item.qty){
+        alert('تعداد مصرفی از موجودی انبار بیشتره');
+        return;
+      }
+      item.qty -= useQty;
+      saveInventory();
+
+      transactions.push({
+        id: Date.now()+'-'+Math.random().toString(36).slice(2,7),
+        type: 'expense',
+        date: todayStr(),
+        category: 'قطعه مصرفی (از انبار): '+item.name,
+        person: '',
+        amount: useQty*item.unitCost,
+        method: 'noncash',
+        note: `${useQty} عدد از انبار مصرف شد`,
+        jobId: fd.get('jobId') || null,
+        paid: true
+      });
+      saveData();
+      render();
+    };
+  }
+
+  const downloadBtn = document.getElementById('downloadBackupBtn');
+  if(downloadBtn){
+    downloadBtn.onclick = ()=>{
+      const backup = {
+        exportedAt: new Date().toISOString(),
+        transactions, recurring, jobs, inventory, openingCash
+      };
+      const blob = new Blob([JSON.stringify(backup, null, 2)], {type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'daftar-tamirgah-backup-'+todayStr()+'.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    };
+  }
+  const restoreFile = document.getElementById('restoreFile');
+  if(restoreFile){
+    restoreFile.onchange = (e)=>{
+      const file = e.target.files[0];
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev)=>{
+        try{
+          const data = JSON.parse(ev.target.result);
+          if(!confirm('اطلاعات فعلی با این فایل جایگزین بشه؟ این کار برگشت‌پذیر نیست.')) return;
+          transactions = data.transactions || [];
+          recurring = data.recurring || [];
+          jobs = data.jobs || [];
+          inventory = data.inventory || [];
+          openingCash = Number(data.openingCash) || 0;
+          saveData(); saveRecurring(); saveJobs(); saveInventory(); saveOpeningCash();
+          switchTab('dashboard');
+        }catch(err){
+          alert('این فایل معتبر نیست');
+        }
+      };
+      reader.readAsText(file);
+    };
+  }
+}
+
+loadData();
+</script>
+</body>
+</html>
